@@ -1,4 +1,4 @@
-# sendrop
+# DropPod: You're Local Network Chating tool
 
 A new Flutter project.
 
