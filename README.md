@@ -1,4 +1,4 @@
-# DropPod: You're Local Network Chating tool
+# DropPod: You're Local Network Chating Tool
 
 A new Flutter project.
 
