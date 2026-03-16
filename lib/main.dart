@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:sendrop/pages/udp.dart';
+import 'package:sendrop/pages/udp_widget.dart';
 
 void main() {
   runApp(const MyApp());
