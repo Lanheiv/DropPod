@@ -2,6 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 class UdpService {
+  static final UdpService _instance = UdpService._internal();
+  factory UdpService() => _instance;
+  UdpService._internal();
+
   String myusername = "test"; // username can be change later in menu
   String myUid = "12345"; // specal uid generator 
 
@@ -13,6 +17,8 @@ class UdpService {
   Map<String, Device> devices = {};
   
   Future<void> start() async {
+    if (socket != null) return;
+
     socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, port);
     socket!.broadcastEnabled = true;
 
@@ -28,10 +34,11 @@ class UdpService {
         try {
           var json = jsonDecode(message);
 
-          if (json['uid'] == myUid) return;
           if (json['type'] == requestMassage) {
             sendResponse(datagram.address);
           } 
+
+          if (json['uid'] == myUid) return;
           if (json['type'] == responseMassage) {
             if(!devices.containsKey(json['uid'])) {
               devices[json['uid']] = Device(
@@ -42,7 +49,7 @@ class UdpService {
               );
             }
           }
-        } catch (e) {} // ja nav json tad neko
+        } catch (e) {}
       }
     });
   }

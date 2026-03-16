@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:sendrop/pages/udp_widget.dart';
+import 'package:sendrop/pages/SerchWidget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: UdpWidget(),
+      home: SerchWidget(),
     );
   }
 }
