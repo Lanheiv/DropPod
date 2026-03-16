@@ -3,7 +3,7 @@ import 'dart:io';
 
 class UdpService {
   String myusername = "test"; // username can be change later in menu
-  String myUid = "12345"; // testing specal uid generator 
+  String myUid = "12345"; // specal uid generator 
 
   String requestMassage = "DEVICE_REQUEST";
   String responseMassage = "DEVICE_RESPONSE";
@@ -15,8 +15,6 @@ class UdpService {
   Future<void> start() async {
     socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, port);
     socket!.broadcastEnabled = true;
-    
-    print("UDP listening on $port");
 
     socket!.listen((event) {
       if (event == RawSocketEvent.read) {
@@ -31,9 +29,6 @@ class UdpService {
           var json = jsonDecode(message);
 
           if (json['uid'] == myUid) return;
-          
-          print("Received ${json['type']} from ${json['username']}");
-
           if (json['type'] == requestMassage) {
             sendResponse(datagram.address);
           } 
@@ -45,8 +40,6 @@ class UdpService {
                 ip: senderIp,
                 chatPort: json['chat_port'],
               );
-              
-              print("Device discovered: ${json['username']} at $senderIp");
             }
           }
         } catch (e) {} // ja nav json tad neko
@@ -69,12 +62,11 @@ class UdpService {
       adr,
       port,
     );
-
-    print("Response sent to ${adr.address}");
   }
   void sendRequest() {
     Map json = {
-      "type": requestMassage
+      "type": requestMassage,
+      "uid": myUid,
     };
 
     List<int> data = utf8.encode(jsonEncode(json));
@@ -84,8 +76,6 @@ class UdpService {
       InternetAddress("255.255.255.255"),
       port,
     );
-
-    print("Broadcast sent"); 
   }
 }
 
