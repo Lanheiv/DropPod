@@ -1,6 +1,6 @@
 # DropPod: You're Local Network Chating Tool
 
-...
+WORK IN PROGRESS!!!
 
 ## Getting Started
 
