@@ -38,7 +38,7 @@ class UdpService {
             sendResponse(datagram.address);
           } 
 
-          if (json['uid'] == myUid) return;
+          //if (json['uid'] == myUid) return;
           if (json['type'] == responseMassage) {
             if(!devices.containsKey(json['uid'])) {
               devices[json['uid']] = Device(
