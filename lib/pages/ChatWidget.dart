@@ -41,7 +41,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   AppBar appBar() {
     return AppBar(
       title: Text(
-        "DropPod", 
+        "DropPod", // pārveido par user serch button
         style: TextStyle(
           color: Colors.black,
           fontSize: 16,
