@@ -13,27 +13,56 @@ class _ChatWidgetState extends State<ChatWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.only(top: 40, left: 30, right: 30,),
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 40,
-                  spreadRadius: 0.0,
-                )
-              ]
-            ),
-            child: TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
+      body: Container(
+        margin: EdgeInsets.only(top: 20, left: 40, right: 40, bottom: 20),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft, // or centerRight
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300], // received message
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text("Hello, this is a message"),
+                    ),
+                  ),
+                ],
               ),
             ),
-          )
-        ],
+            Container(
+              margin: EdgeInsets.only(top: 40),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 40,
+                    spreadRadius: 0.0,
+                  )
+                ]
+              ),
+              child: TextField(
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  hintText: "Type a message...",
+
+                  filled: true,
+                  fillColor: Colors.white,
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -71,6 +100,7 @@ class _ChatWidgetState extends State<ChatWidget> {
             borderRadius: BorderRadius.circular(10)
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               GestureDetector(
                 onTap: () {
