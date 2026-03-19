@@ -1,17 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
 
-class UdpService {
+import 'package:sendrop/model/app_data.dart';
+
+class UdpService { // vēlāk jāpārtaisa koda struktūra
   static final UdpService _instance = UdpService._internal();
   factory UdpService() => _instance;
   UdpService._internal();
 
-  String myusername = "test"; // username can be change later in menu
-  String myUid = "12345"; // specal uid generator 
-
   String requestMassage = "DEVICE_REQUEST";
   String responseMassage = "DEVICE_RESPONSE";
-  int port = 3001;
+
+  String myusername = AppData().myusername; // šitos visus mainīgos pārtaisīšu savādāk (shared_preferences izmantojot iespējams)
+  String myUid = AppData().myUid;
+  int port = AppData().port;
 
   RawDatagramSocket? socket;
   Map<String, Device> devices = {};
@@ -45,7 +47,7 @@ class UdpService {
                 uid: json['uid'],
                 username: json['username'],
                 ip: senderIp,
-                chatPort: json['chat_port'],
+                tcpPort: json['chat_port'],
               );
             }
           }
@@ -84,18 +86,4 @@ class UdpService {
       port,
     );
   }
-}
-
-class Device {
-  String uid;
-  String username;
-  String ip;
-  int chatPort;
-
-  Device({
-    required this.uid,
-    required this.username,
-    required this.ip,
-    required this.chatPort,
-  });
 }
