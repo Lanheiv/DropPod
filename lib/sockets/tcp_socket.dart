@@ -32,6 +32,13 @@ class TcpService {
     socket.listen((data) {
       String message = utf8.decode(data);
       print("Received: $message");
+      
+      if (onMessageReceived != null) {
+        onMessageReceived!(message);
+      }
+    },
+    onDone: () {
+      peers.remove(socket);
     });
   }
   void sendMessage(String text) {

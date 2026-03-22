@@ -14,8 +14,24 @@ class ChatWidget extends StatefulWidget {
 class _ChatWidgetState extends State<ChatWidget> {
   final TcpService tcp = TcpService();
   final devices = AppData().devices;
+  final TextEditingController controller = TextEditingController();
+
+  List<String> messages = [];
 
   int onlineCount = AppData().devices.values.where((d) => d.status).length;
+
+  @override
+  void initState() {
+    super.initState();
+
+    tcp.onMessageReceived = (msg) {
+      if (!mounted) return;
+
+      setState(() {
+        messages.add("Peer: $msg");
+      });
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,20 +43,22 @@ class _ChatWidgetState extends State<ChatWidget> {
           children: [
             Expanded(
               child: ListView(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft, // or centerRight
+                children: messages.map((msg) {
+                  final isMe = msg.startsWith("Me:");
+
+                  return Align(
+                    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 5),
                       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.grey[300], // received message
+                        color: isMe ? Colors.green[200] : Colors.grey[300],
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text("Hello, this is a message"),
+                      child: SelectableText(msg),
                     ),
-                  ),
-                ],
+                  );
+                }).toList(),
               ),
             ),
             Container(
@@ -55,6 +73,18 @@ class _ChatWidgetState extends State<ChatWidget> {
                 ]
               ),
               child: TextField(
+                controller: controller,
+                textInputAction: TextInputAction.send,
+                onSubmitted: (text) {
+                  if (text.trim().isEmpty) return;
+
+                  tcp.sendMessage(text);
+                  setState(() {
+                    messages.add("Me: $text");
+                  });
+
+                  controller.clear();
+                },
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   hintText: "Type a message...",
@@ -98,15 +128,12 @@ class _ChatWidgetState extends State<ChatWidget> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               GestureDetector(
-                onTap: () {
-                  // šeit pogas darbība
-                },
                 child: SvgPicture.asset(
                   "assets/icons/user.svg",
                   colorFilter: ColorFilter.mode(Colors.green, BlendMode.srcIn),
                 )
               ),
-              Text(
+              SelectableText(
                 onlineCount.toString(),
                 style: TextStyle( color: Colors.green),
               ),
