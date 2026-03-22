@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:sendrop/sockets/udp_socket.dart';
-import 'package:sendrop/sockets/tcp_socket.dart';
+import 'package:sendrop/sockets/services.dart'; 
 import 'package:sendrop/pages/chat_widget.dart';
 
 class SerchWidget extends StatefulWidget {
@@ -12,8 +11,8 @@ class SerchWidget extends StatefulWidget {
 }
 
 class _SerchWidgetState extends State<SerchWidget> {
-  final UdpService udp = UdpService();
-  final TcpService tcp = TcpService();
+  final udp = udpService;
+  final tcp = tcpService; 
 
   bool hasNavigated = false;
 

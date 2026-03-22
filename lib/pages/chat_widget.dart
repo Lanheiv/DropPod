@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:sendrop/sockets/tcp_socket.dart';
+import 'package:sendrop/sockets/services.dart';
 import 'package:sendrop/model/app_data.dart';
 
 class ChatWidget extends StatefulWidget {
@@ -12,7 +12,7 @@ class ChatWidget extends StatefulWidget {
 }
 
 class _ChatWidgetState extends State<ChatWidget> {
-  final TcpService tcp = TcpService();
+  final tcp = tcpService;
   final devices = AppData().devices;
   final TextEditingController controller = TextEditingController();
 

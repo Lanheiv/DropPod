@@ -1,13 +1,25 @@
+import 'dart:math';
+
 class AppData { // pagaidu class kur glabā datus jāpārtaisa
   static final AppData _instance = AppData._internal();
   factory AppData() => _instance;
   AppData._internal();
 
   String myusername = "test";
-  String myUid = "12345";
-  int port = 3001;
+  final String myUid = _generateUid();  //String myUid = "12345";
+
+  int udpPort = 3001;
+  int tcpPort = 3002;
 
   Map<String, Device> devices = {};
+
+  static String _generateUid() {
+    final random = Random();
+    return [
+      for (int i = 0; i < 10; i++)
+        String.fromCharCode('0'.codeUnitAt(0) + random.nextInt(10))
+    ].join();
+  }
 }
 
 class Device { // pārdēvēšo failu un pārlikšu iespējams pārtaisītu visu struktūru

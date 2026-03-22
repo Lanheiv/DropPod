@@ -13,7 +13,7 @@ class UdpService { // vēlāk jāpārtaisa koda struktūra
 
   String myusername = AppData().myusername; // šitos visus mainīgos pārtaisīšu savādāk (shared_preferences izmantojot iespējams)
   String myUid = AppData().myUid;
-  int port = AppData().port;
+  int port = AppData().udpPort;
 
   RawDatagramSocket? socket;
   final appData = AppData();
@@ -27,8 +27,11 @@ class UdpService { // vēlāk jāpārtaisa koda struktūra
     socket!.broadcastEnabled = true;
 
     socket!.listen((event) {
+      print('UDP event: $event');
+
       if (event == RawSocketEvent.read) {
-        Datagram? datagram = socket!.receive();
+
+        final datagram = socket!.receive();
 
         if (datagram == null) return;
 
@@ -41,7 +44,7 @@ class UdpService { // vēlāk jāpārtaisa koda struktūra
             sendResponse(datagram.address);
           } 
 
-          //if (json['uid'] == myUid) return;
+          if (json['uid'] == myUid) return;
           if (json['type'] == responseMassage) { // Add periodic scanning if nothing found it scens for 10 sec if it cant found any responde
             if(!appData.devices.containsKey(json['uid'])) {
               final device = Device(
@@ -84,7 +87,7 @@ class UdpService { // vēlāk jāpārtaisa koda struktūra
       "username": myusername,
       "uid": myUid,
       "ip": ip,
-      "chat_port": port
+      "chat_port": AppData().tcpPort
     };
 
     List<int> data = utf8.encode(jsonEncode(json));

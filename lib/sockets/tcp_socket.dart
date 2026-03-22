@@ -9,26 +9,24 @@ class TcpService {
   List<Socket> peers = [];
   ServerSocket? socket;
 
-  int port = AppData().port;
+  int port = AppData().tcpPort;
 
   Future<void> start() async {
     socket = await ServerSocket.bind(InternetAddress.anyIPv4, port);
 
     socket!.listen((client) {
-      peers.add(client);
-
       listenToSocket(client);
     });
   }
   Future<void> connectToDevice(Device device) async {
     final socket = await Socket.connect(device.ip, device.tcpPort);
 
-    peers.add(socket);
-
     listenToSocket(socket);
   } 
 
   void listenToSocket(Socket socket) {
+    peers.add(socket);
+
     socket.listen((data) {
       String message = utf8.decode(data);
       print("Received: $message");
