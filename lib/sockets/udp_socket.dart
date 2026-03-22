@@ -16,8 +16,10 @@ class UdpService { // vēlāk jāpārtaisa koda struktūra
   int port = AppData().port;
 
   RawDatagramSocket? socket;
-  Map<String, Device> devices = {};
+  final appData = AppData();
   
+  Function(Device device)? onDeviceFound;
+
   Future<void> start() async {
     if (socket != null) return;
 
@@ -31,36 +33,57 @@ class UdpService { // vēlāk jāpārtaisa koda struktūra
         if (datagram == null) return;
 
         String message = utf8.decode(datagram.data);
-        String senderIp = datagram.address.address;
 
         try {
           var json = jsonDecode(message);
 
-          if (json['type'] == requestMassage) {
+          if (json['type'] == requestMassage) { // chko kas atbild un update data, ja ir kāds kas pazudis seto status false
             sendResponse(datagram.address);
           } 
 
           //if (json['uid'] == myUid) return;
-          if (json['type'] == responseMassage) {
-            if(!devices.containsKey(json['uid'])) {
-              devices[json['uid']] = Device(
+          if (json['type'] == responseMassage) { // Add periodic scanning if nothing found it scens for 10 sec if it cant found any responde
+            if(!appData.devices.containsKey(json['uid'])) {
+              final device = Device(
                 uid: json['uid'],
                 username: json['username'],
-                ip: senderIp,
+                ip: json['ip'],
                 tcpPort: json['chat_port'],
+                status: true
               );
+
+              appData.devices[json['uid']] = device;
+
+              if (onDeviceFound != null) {
+                onDeviceFound!(device);
+              }
             }
           }
-        } catch (e) {}
+        } catch (e) {
+          print("Errore try message");
+        }
       }
     });
   }
+  Future<String> getLocalIp() async {
+    for (var interface in await NetworkInterface.list()) {
+      for (var addr in interface.addresses) {
+        if (addr.type == InternetAddressType.IPv4) {
+          return addr.address;
+        }
+      }
+    }
+    return "0.0.0.0";
+  }
 
-  void sendResponse(InternetAddress adr) {
+  void sendResponse(InternetAddress adr) async {
+    String ip = await getLocalIp();
+
     Map json = {
       "type": responseMassage,
       "username": myusername,
       "uid": myUid,
+      "ip": ip,
       "chat_port": port
     };
 
@@ -76,14 +99,11 @@ class UdpService { // vēlāk jāpārtaisa koda struktūra
     Map json = {
       "type": requestMassage,
       "uid": myUid,
+      "username": myusername,
     };
 
     List<int> data = utf8.encode(jsonEncode(json));
 
-    socket!.send(
-      data,
-      InternetAddress("255.255.255.255"),
-      port,
-    );
+    socket!.send(data, InternetAddress("255.255.255.255"), port);
   }
 }

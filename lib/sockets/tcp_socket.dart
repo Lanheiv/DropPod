@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:sendrop/model/app_data.dart';
 
 class TcpService {
+  Function(String message)? onMessageReceived;
+
   List<Socket> peers = [];
   ServerSocket? socket;
 
@@ -30,9 +32,6 @@ class TcpService {
     socket.listen((data) {
       String message = utf8.decode(data);
       print("Received: $message");
-    },
-    onDone: () {
-      peers.remove(socket);
     });
   }
   void sendMessage(String text) {

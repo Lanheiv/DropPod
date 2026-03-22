@@ -6,6 +6,8 @@ class AppData { // pagaidu class kur glabā datus jāpārtaisa
   String myusername = "test";
   String myUid = "12345";
   int port = 3001;
+
+  Map<String, Device> devices = {};
 }
 
 class Device { // pārdēvēšo failu un pārlikšu iespējams pārtaisītu visu struktūru
@@ -13,11 +15,13 @@ class Device { // pārdēvēšo failu un pārlikšu iespējams pārtaisītu visu
   String username;
   String ip;
   int tcpPort;
+  bool status;
 
   Device({
     required this.uid,
     required this.username,
     required this.ip,
     required this.tcpPort,
+    required this.status
   });
 }

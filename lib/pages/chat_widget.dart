@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:sendrop/sockets/tcp_socket.dart';
+import 'package:sendrop/model/app_data.dart';
+
 class ChatWidget extends StatefulWidget {
   const ChatWidget({super.key});
 
@@ -9,6 +12,11 @@ class ChatWidget extends StatefulWidget {
 }
 
 class _ChatWidgetState extends State<ChatWidget> {
+  final TcpService tcp = TcpService();
+  final devices = AppData().devices;
+
+  int onlineCount = AppData().devices.values.where((d) => d.status).length;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,19 +87,6 @@ class _ChatWidgetState extends State<ChatWidget> {
       ),
       backgroundColor: Colors.white,
       automaticallyImplyLeading: false,
-      leading: Container(
-        margin: EdgeInsets.all(5),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10)
-        ),
-        child: GestureDetector(
-          onTap: () {
-            // šeit pogas darbība
-          },
-          child: SvgPicture.asset("assets/icons/settings.svg")
-        ),
-      ),
       actions: [
         Container(
           margin: EdgeInsets.only(right: 15, top: 5, bottom: 5),
@@ -112,11 +107,9 @@ class _ChatWidgetState extends State<ChatWidget> {
                 )
               ),
               Text(
-                "1",
-                style: TextStyle(
-                  color: Colors.green,
-                ),
-              )
+                onlineCount.toString(),
+                style: TextStyle( color: Colors.green),
+              ),
             ],
           )
         ),

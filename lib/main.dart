@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:sendrop/pages/SerchWidget.dart';
+import 'package:sendrop/pages/serch_widget.dart';
 
 void main() {
   runApp(const MyApp());
