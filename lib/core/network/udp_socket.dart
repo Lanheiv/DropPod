@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:sendrop/core/data/app_data.dart';
 
-import 'package:sendrop/model/app_data.dart';
-
-class UdpService { // vēlāk jāpārtaisa koda struktūra
+class UdpService {
   static final UdpService _instance = UdpService._internal();
   factory UdpService() => _instance;
   UdpService._internal();
@@ -14,7 +14,7 @@ class UdpService { // vēlāk jāpārtaisa koda struktūra
   String myusername = AppData().myusername; // šitos visus mainīgos pārtaisīšu savādāk (shared_preferences izmantojot iespējams)
   String myUid = AppData().myUid;
   int port = AppData().udpPort;
-
+  
   RawDatagramSocket? socket;
   final appData = AppData();
   
@@ -27,8 +27,6 @@ class UdpService { // vēlāk jāpārtaisa koda struktūra
     socket!.broadcastEnabled = true;
 
     socket!.listen((event) {
-      print('UDP event: $event');
-
       if (event == RawSocketEvent.read) {
 
         final datagram = socket!.receive();
@@ -40,12 +38,13 @@ class UdpService { // vēlāk jāpārtaisa koda struktūra
         try {
           var json = jsonDecode(message);
 
-          if (json['type'] == requestMassage) { // chko kas atbild un update data, ja ir kāds kas pazudis seto status false
+          if (json['type'] == requestMassage) {
             sendResponse(datagram.address);
           } 
 
-          if (json['uid'] == myUid) return;
-          if (json['type'] == responseMassage) { // Add periodic scanning if nothing found it scens for 10 sec if it cant found any responde
+          if (json['type'] == responseMassage) {
+            if (json['uid'] == myUid) return;
+
             if(!appData.devices.containsKey(json['uid'])) {
               final device = Device(
                 uid: json['uid'],
@@ -63,7 +62,7 @@ class UdpService { // vēlāk jāpārtaisa koda struktūra
             }
           }
         } catch (e) {
-          print("Errore try message");
+          debugPrint("Errore on message reciving");
         }
       }
     });

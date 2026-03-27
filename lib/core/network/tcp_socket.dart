@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:sendrop/model/app_data.dart';
+import 'package:sendrop/core/data/app_data.dart';
 
 class TcpService {
   Function(String message)? onMessageReceived;
@@ -19,6 +19,8 @@ class TcpService {
     });
   }
   Future<void> connectToDevice(Device device) async {
+    if (peers.any((s) => s.remoteAddress.address == device.ip)) return;
+
     final socket = await Socket.connect(device.ip, device.tcpPort);
 
     listenToSocket(socket);
@@ -29,7 +31,6 @@ class TcpService {
 
     socket.listen((data) {
       String message = utf8.decode(data);
-      print("Received: $message");
       
       if (onMessageReceived != null) {
         onMessageReceived!(message);

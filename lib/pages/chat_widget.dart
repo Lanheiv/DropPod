@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-import 'package:sendrop/sockets/services.dart';
-import 'package:sendrop/model/app_data.dart';
+import 'package:sendrop/core/network/services.dart';
+import 'package:sendrop/core/data/app_data.dart';
 
 class ChatWidget extends StatefulWidget {
   const ChatWidget({super.key});
@@ -28,7 +26,7 @@ class _ChatWidgetState extends State<ChatWidget> {
       if (!mounted) return;
 
       setState(() {
-        messages.add("Peer: $msg");
+        messages.add(msg);
       });
     };
   }
@@ -44,7 +42,7 @@ class _ChatWidgetState extends State<ChatWidget> {
             Expanded(
               child: ListView(
                 children: messages.map((msg) {
-                  final isMe = msg.startsWith("Me:");
+                  final isMe = msg.startsWith("Es:");
 
                   return Align(
                     alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -52,7 +50,7 @@ class _ChatWidgetState extends State<ChatWidget> {
                       margin: EdgeInsets.symmetric(vertical: 5),
                       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: isMe ? Colors.green[200] : Colors.grey[300],
+                        color: Color.fromRGBO(232, 231, 231, 1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: SelectableText(msg),
@@ -72,32 +70,34 @@ class _ChatWidgetState extends State<ChatWidget> {
                   )
                 ]
               ),
-              child: TextField(
-                controller: controller,
-                textInputAction: TextInputAction.send,
-                onSubmitted: (text) {
-                  if (text.trim().isEmpty) return;
+              child: SafeArea(
+                child: TextField(
+                  controller: controller,
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (text) {
+                    if (text.trim().isEmpty) return;
 
-                  tcp.sendMessage(text);
-                  setState(() {
-                    messages.add("Me: $text");
-                  });
+                    tcp.sendMessage(text);
+                    setState(() {
+                      messages.add("Es: $text");
+                    });
 
-                  controller.clear();
-                },
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  hintText: "Type a message...",
+                    controller.clear();
+                  },
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    hintText: "Rakstīt",
 
-                  filled: true,
-                  fillColor: Colors.white,
+                    filled: true,
+                    fillColor: Colors.white,
 
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
-              ),
+              )
             )
           ],
         ),
@@ -108,7 +108,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   AppBar appBar() {
     return AppBar(
       title: Text(
-        "DropPod", // pārveido par user serch button
+        "DropPod",
         style: TextStyle(
           color: Colors.black,
           fontSize: 16,
@@ -123,21 +123,6 @@ class _ChatWidgetState extends State<ChatWidget> {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10)
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              GestureDetector(
-                child: SvgPicture.asset(
-                  "assets/icons/user.svg",
-                  colorFilter: ColorFilter.mode(Colors.green, BlendMode.srcIn),
-                )
-              ),
-              SelectableText(
-                onlineCount.toString(),
-                style: TextStyle( color: Colors.green),
-              ),
-            ],
           )
         ),
       ],
