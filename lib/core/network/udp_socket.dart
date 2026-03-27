@@ -20,13 +20,13 @@ class UdpService {
   
   Function(Device device)? onDeviceFound;
 
-  Future<void> start() async {
+  Future<void> start() async { // automātiski paliž šo funkciju lai varētu klausīties noteiktā portā 
     if (socket != null) return;
 
-    socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, port);
+    socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, port); // definē ka vajag meklēt gan wifi, gan ethernet un jāklausās definētā port kas ir iekšā app_data
     socket!.broadcastEnabled = true;
 
-    socket!.listen((event) {
+    socket!.listen((event) { // palaiž ja dzird kautko 
       if (event == RawSocketEvent.read) {
 
         final datagram = socket!.receive();
@@ -35,7 +35,7 @@ class UdpService {
 
         String message = utf8.decode(datagram.data);
 
-        try {
+        try { // datu validācija un lietotāju saglabāšana
           var json = jsonDecode(message);
 
           if (json['type'] == requestMassage) {
@@ -67,7 +67,7 @@ class UdpService {
       }
     });
   }
-  Future<String> getLocalIp() async {
+  Future<String> getLocalIp() async { // iegūst savu locālo ip
     for (var interface in await NetworkInterface.list()) {
       for (var addr in interface.addresses) {
         if (addr.type == InternetAddressType.IPv4) {
@@ -78,7 +78,7 @@ class UdpService {
     return "0.0.0.0";
   }
 
-  void sendResponse(InternetAddress adr) async {
+  void sendResponse(InternetAddress adr) async { // nosūt udp ziņu ka eksistē
     String ip = await getLocalIp();
 
     Map json = {
@@ -97,7 +97,7 @@ class UdpService {
       port,
     );
   }
-  void sendRequest() {
+  void sendRequest() { // nosūta upd pieprasijumu
     Map json = {
       "type": requestMassage,
       "uid": myUid,

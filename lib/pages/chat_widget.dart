@@ -19,7 +19,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   int onlineCount = AppData().devices.values.where((d) => d.status).length;
 
   @override
-  void initState() {
+  void initState() { // texta izvads 
     super.initState();
 
     tcp.onMessageReceived = (msg) {
@@ -32,7 +32,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { // dizains
     return Scaffold(
       appBar: appBar(),
       body: body(),

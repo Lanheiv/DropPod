@@ -6,14 +6,14 @@ class AppData { // pagaidu class kur glabā datus jāpārtaisa
   AppData._internal();
 
   String myusername = "test";
-  final String myUid = _generateUid();  //String myUid = "12345";
+  final String myUid = _generateUid();
 
   int udpPort = 3001;
   int tcpPort = 3002;
 
   Map<String, Device> devices = {};
 
-  static String _generateUid() {
+  static String _generateUid() { // ID ģenerēšana
     final random = Random();
     return [
       for (int i = 0; i < 10; i++)

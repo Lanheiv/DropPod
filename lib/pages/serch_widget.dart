@@ -20,7 +20,7 @@ class _SerchWidgetState extends State<SerchWidget> {
 
   @override
   
-  void initState() {
+  void initState() { // starte udp un tcp, un pārsūta lietotāju uz chat widget
     super.initState();
 
     udp.start();
@@ -50,7 +50,7 @@ class _SerchWidgetState extends State<SerchWidget> {
     };
   }
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { // dizains
     return Scaffold(
       body: Center(
         child: ElevatedButton(

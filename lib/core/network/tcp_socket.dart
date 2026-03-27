@@ -18,7 +18,7 @@ class TcpService {
       listenToSocket(client);
     });
   }
-  Future<void> connectToDevice(Device device) async {
+  Future<void> connectToDevice(Device device) async { // Brige izveidošana lia varētu sarakstīties
     if (peers.any((s) => s.remoteAddress.address == device.ip)) return;
 
     final socket = await Socket.connect(device.ip, device.tcpPort);
@@ -26,7 +26,7 @@ class TcpService {
     listenToSocket(socket);
   } 
 
-  void listenToSocket(Socket socket) {
+  void listenToSocket(Socket socket) { // Klausās vai ir ziņas 
     peers.add(socket);
 
     socket.listen((data) {
@@ -40,7 +40,7 @@ class TcpService {
       peers.remove(socket);
     });
   }
-  void sendMessage(String text) {
+  void sendMessage(String text) { // Nosūta ziņu
     for (var peer in peers) {
       peer.write(text);
     }
