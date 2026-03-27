@@ -35,73 +35,7 @@ class _ChatWidgetState extends State<ChatWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: Container(
-        margin: EdgeInsets.only(top: 20, left: 40, right: 40, bottom: 20),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: messages.map((msg) {
-                  final isMe = msg.startsWith("Es:");
-
-                  return Align(
-                    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 5),
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(232, 231, 231, 1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: SelectableText(msg),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 40),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 40,
-                    spreadRadius: 0.0,
-                  )
-                ]
-              ),
-              child: SafeArea(
-                child: TextField(
-                  controller: controller,
-                  textInputAction: TextInputAction.send,
-                  onSubmitted: (text) {
-                    if (text.trim().isEmpty) return;
-
-                    tcp.sendMessage(text);
-                    setState(() {
-                      messages.add("Es: $text");
-                    });
-
-                    controller.clear();
-                  },
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    hintText: "Rakstīt",
-
-                    filled: true,
-                    fillColor: Colors.white,
-
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              )
-            )
-          ],
-        ),
-      ),
+      body: body(),
     );
   }
 
@@ -126,6 +60,75 @@ class _ChatWidgetState extends State<ChatWidget> {
           )
         ),
       ],
+    );
+  }
+  Container body() {
+    return Container(
+      margin: EdgeInsets.only(top: 20, left: 40, right: 40, bottom: 20),
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              children: messages.map((msg) {
+                final isMe = msg.startsWith("Es:");
+
+                return Align(
+                  alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 5),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(232, 231, 231, 1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: SelectableText(msg),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 40),
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 40,
+                  spreadRadius: 0.0,
+                )
+              ]
+            ),
+            child: SafeArea(
+              child: TextField(
+                controller: controller,
+                textInputAction: TextInputAction.send,
+                onSubmitted: (text) {
+                  if (text.trim().isEmpty) return;
+
+                  tcp.sendMessage(text);
+                  setState(() {
+                    messages.add("Es: $text");
+                  });
+
+                  controller.clear();
+                },
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  hintText: "Rakstīt",
+
+                  filled: true,
+                  fillColor: Colors.white,
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            )
+          )
+        ],
+      ),
     );
   }
 }
